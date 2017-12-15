@@ -7,6 +7,7 @@ from iothub_service_client import IoTHubRegistryManager, IoTHubRegistryManagerAu
 from iothub_service_client import IoTHubDeviceStatus, IoTHubError
 from d2cMsgSender import D2CMsgSender
 from datetime import datetime
+from time import sleep
 
 def get_sin_data(freq, A, n):
     f_sin = freq # Hz
@@ -18,7 +19,7 @@ def get_sin_data(freq, A, n):
 def get_fft(t, y, n):
     sp = np.fft.fft(y)
     freq = np.fft.fftfreq(t.shape[-1]) * n
-    freq = freq[:n/2]
+    freq = freq[:n/2]   
     amp = abs(sp.imag)[:n/2] / (n/2)
     return amp, freq
 
@@ -47,7 +48,13 @@ values = json.dumps(list(y))
 
 message = "{\"timestamp\":\""  + timestamp +"\",\"deviceid\":\"MyFirstPythonDevice\",\"values\": " + values + "}"
 sender = D2CMsgSender(connectionString)
+
+i = 0
+# while True:
 sender.sendD2CMsg(deviceId, message)
+print str(i) + ': Message was sent'
+i+=1
+sleep(1)
 
 # plt.plot(t, y)
 # plt.show()
@@ -58,3 +65,6 @@ sender.sendD2CMsg(deviceId, message)
 # plt.xlabel("Frequency(Hz)")
 # plt.ylabel("Amplitude")
 # plt.show()
+
+
+print "Finished Simulation"
